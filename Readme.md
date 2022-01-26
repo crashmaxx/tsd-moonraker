@@ -28,6 +28,17 @@ Following sections are mandatory in Moonraker's config file:
 
 [history]
 
+[update_manager service_name]
+type: git_repo
+path: ~/tsd-moonraker
+origin: https://github.com/TheSpaghettiDetective/tsd-moonraker.git
+primary_branch: main
+env: ~/tsd-moonraker/bin/python3
+requirements: requirements.txt
+install_script: install.sh
+is_system_service: True
+
+
 ```
 
 Grab moonraker api key from ```/access/api_key```.
@@ -56,30 +67,27 @@ snapshot_url = <defaults to http://127.0.0.1:8080/?action=snapshot>
 How to run
 ----------
 
-    # requires python3; install python3 packages
-
-    sudo apt-get install python3 python3-pip python3-venv
-
+    # go to home directory
+    
+    cd ~
+    
     # clone repo
 
     git clone https://github.com/TheSpaghettiDetective/tsd-moonraker.git
-
-    # setup virtual environment
-
-    python3 -m venv tsd-moonraker/
+    
+    # when the process is done, run the install script:
+    
     cd tsd-moonraker
-    source ./bin/activate
-    pip3 install -r requirements.txt
+    ./install.sh
 
     # fill in essential configuration
 
-    cp config.sample.ini config.ini
-    nano config.ini
+    nano ~/klipper_config/config.ini
 
     # link printer (grab tsd auth token)
 
     python3 -m tsd_moonraker.link -c config.ini
 
-    # start app
+    # start service
 
-    python3 -m tsd_moonraker.app -c config.ini -l tsd_moonraker.log
+    sudo systemctl start tsd-moonraker
